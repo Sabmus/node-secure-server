@@ -2,6 +2,8 @@
   <h1 align="center">Example of how to secure endpoints</h1>
 </div>
 
+`In progress...`
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
