@@ -76,8 +76,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
 - [This Awesome Template](https://github.com/othneildrew/Best-README-Template)
 
 <!-- MARKDOWN LINKS & IMAGES -->
