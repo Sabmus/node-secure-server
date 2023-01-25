@@ -4,7 +4,9 @@ const morgan = require("morgan");
 const path = require("path");
 const cors = require("cors");
 
-const usersRouter = require("./routes/users.router");
+require("./middlewares/auth");
+
+const apiRouter = require("./routes/api.router");
 
 const app = express();
 
@@ -26,8 +28,16 @@ app.use("/", express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
   return res.render("index", {
     title: "Home",
+    user: req.user,
   });
 });
-app.use("/users", usersRouter);
+
+app.use("/v1", apiRouter);
+
+// Handle errors.
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.json({ error: err });
+});
 
 module.exports = app;

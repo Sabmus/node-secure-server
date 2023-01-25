@@ -6,12 +6,16 @@
     <title>{{title}}</title>
 
     <link rel="stylesheet" href="css/styles.css" />
+
   </head>
   <body>
 
     <ul class="horizontal-list">
-      <li><a href="/login">Log In</a></li>
-      <li><a href="/logout">Log Out</a></li>
+      {{#unless user}}
+        <li><a href="/login">Log In</a></li>
+      {{else}}
+        <li><a href="/logout">Log Out</a></li>
+      {{/unless}}
     </ul>
     <hr />
 
