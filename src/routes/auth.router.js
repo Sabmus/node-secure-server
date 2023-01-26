@@ -7,23 +7,12 @@ const authRouter = express.Router();
 const secretSignKey = process.env.SECRET_JWT_SIGN;
 const EXPIRATION = 1000 * 60 * 60 * 8; // 8 hours
 
-authRouter.post(
-  "/signup",
-  passport.authenticate("signup", { session: false }),
-  (req, res, next) => {
-    res.json({
-      message: "Signup successful",
-      user: req.user,
-    });
-  }
-);
-
 authRouter.post("/login", (req, res, next) => {
   passport.authenticate("login", (err, user, info) => {
     try {
       if (err || !user) {
-        const error = new Error(info);
-        return next(error);
+        const error = new Error(info.message);
+        return next(error.message);
       }
 
       req.login(user, { session: false }, (error) => {

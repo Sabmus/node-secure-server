@@ -21,7 +21,6 @@ usersRouter.get("/:username", httpGetOneUser);
 usersRouter.put("/:username", httpModifyUserFull);
 // delete a user
 usersRouter.delete("/:username", httpSetActiveToFalse);
-
 // get own user
 usersRouter.get("/me", httpGetOwnUser);
 

@@ -1,4 +1,5 @@
 const permissions = {
+  one: 1,
   two: 2,
   three: 3,
   four: 4,
@@ -6,7 +7,7 @@ const permissions = {
 };
 
 function hasPermissionLevelOne(req, res, next) {
-  if (req && req.user.permissionlevel === permissions.one) {
+  if (req && req.user.permissionlevel >= permissions.one) {
     return next();
   } else {
     return res.status(403).json({
@@ -16,7 +17,7 @@ function hasPermissionLevelOne(req, res, next) {
 }
 
 function hasPermissionLevelTwo(req, res, next) {
-  if (req && req.user.permissionlevel === permissions.two) {
+  if (req && req.user.permissionlevel >= permissions.two) {
     return next();
   } else {
     return res.status(403).json({
@@ -26,7 +27,7 @@ function hasPermissionLevelTwo(req, res, next) {
 }
 
 function hasPermissionLevelThree(req, res, next) {
-  if (req && req.user.permissionlevel === permissions.three) {
+  if (req && req.user.permissionlevel >= permissions.three) {
     return next();
   } else {
     return res.status(403).json({
@@ -36,7 +37,7 @@ function hasPermissionLevelThree(req, res, next) {
 }
 
 function hasPermissionLevelFour(req, res, next) {
-  if (req && req.user.permissionlevel === permissions.four) {
+  if (req && req.user.permissionlevel >= permissions.four) {
     return next();
   } else {
     return res.status(403).json({
@@ -46,7 +47,7 @@ function hasPermissionLevelFour(req, res, next) {
 }
 
 function hasPermissionLevelFive(req, res, next) {
-  if (req && req.user.permissionlevel === permissions.five) {
+  if (req && req.user.permissionlevel >= permissions.five) {
     return next();
   } else {
     return res.status(403).json({

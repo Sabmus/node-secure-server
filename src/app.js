@@ -7,16 +7,10 @@ const passport = require("passport");
 const cookierParser = require("cookie-parser");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
-const {
-  hasPermissionLevelOne,
-  hasPermissionLevelTwo,
-  hasPermissionLevelThree,
-  hasPermissionLevelFour,
-  hasPermissionLevelFive,
-} = require("./middlewares/permissions");
 require("./middlewares/auth");
 
 const apiRouter = require("./routes/api.router");
+const secretRouter = require("./routes/secret.router");
 
 const app = express();
 
@@ -35,48 +29,13 @@ app.use(morgan("combined"));
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/v1", apiRouter);
+app.use("/secret", secretRouter);
 
 app.get("/", (req, res) => {
-  return res.render("index", {
-    title: "Home",
-    user: req.user,
+  return res.status(200).json({
+    message: "Hello World!",
   });
 });
-
-app.get(
-  "/secret",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    return res.status(200).json({
-      secret: "first secret",
-      user: req.user,
-    });
-  }
-);
-
-app.get(
-  "/secretlevel2",
-  passport.authenticate("jwt", { session: false }),
-  hasPermissionLevelTwo,
-  (req, res) => {
-    return res.status(200).json({
-      secret: "level two secret",
-      user: req.user,
-    });
-  }
-);
-
-app.get(
-  "/secretlevel3",
-  passport.authenticate("jwt", { session: false }),
-  hasPermissionLevelThree,
-  (req, res) => {
-    return res.status(200).json({
-      secret: "level three secret",
-      user: req.user,
-    });
-  }
-);
 
 // Handle errors.
 app.use(function (err, req, res, next) {

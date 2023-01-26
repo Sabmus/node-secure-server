@@ -1,4 +1,5 @@
 const {
+  checkUsernameExists,
   getAllUsers,
   createNewUser,
   getOneUser,
@@ -6,7 +7,7 @@ const {
   setActiveToFalse,
 } = require("../models/users.model");
 
-const { hashPassword } = require("../services/hash");
+const { hashPassword } = require("../utils/hash");
 
 const MIN_PASSWORD_LENGTH = 8;
 const PERMISSION_LEVELS = [1, 2, 3, 4, 5];
@@ -14,8 +15,8 @@ const ACTIVE_OPTIONS = [0, 1];
 
 async function createUserObject(reqBody) {
   const userModified = {};
-  userModified["username"] = reqBody.username;
 
+  // if password is passed, hashes the password after validate MIN_PASSWORD_LENGTH
   if (reqBody.password) {
     if (reqBody.password.length >= MIN_PASSWORD_LENGTH) {
       userModified["password"] = await hashPassword(reqBody.password);
@@ -26,6 +27,7 @@ async function createUserObject(reqBody) {
     }
   }
 
+  // if permissionlevel is passed, validate that it's one of the available levels
   if (reqBody.permissionlevel) {
     if (PERMISSION_LEVELS.includes(reqBody.permissionlevel)) {
       userModified["permissionlevel"] = reqBody.permissionlevel;
@@ -36,6 +38,7 @@ async function createUserObject(reqBody) {
     }
   }
 
+  // if active is passed, validate that is: 1 or 0
   if (reqBody.active || reqBody.active === 0) {
     if (ACTIVE_OPTIONS.includes(reqBody.active)) {
       userModified["active"] = reqBody.active;
@@ -51,39 +54,56 @@ async function createUserObject(reqBody) {
 
 async function httpGetUsers(req, res) {
   const allUsers = await getAllUsers();
+
+  if (!allUsers) {
+    return res.status(200).json({
+      message: "No users in db",
+    });
+  }
+
   return res.status(200).json(allUsers);
 }
 
 async function httpCreateNewUser(req, res) {
-  const reqBody = req.body;
+  const { username, password } = req.body;
 
   // validate that properties exists
-  if (!reqBody.username || !reqBody.password) {
+  if (!username || !password) {
     return res.status(400).json({
       error: "Must provide username and password.",
     });
   }
 
-  const hashedPassword = await hashPassword(reqBody.password);
+  // validat if user exists in db
+  const isAlreadyUser = await checkUsernameExists(username);
+
+  if (isAlreadyUser) {
+    return res.status(409).json({
+      error: "User already exists",
+    });
+  }
+
+  const hashedPassword = await hashPassword(password);
 
   const newUser = await createNewUser({
-    username: reqBody.username,
+    username,
     password: hashedPassword,
   });
 
-  if (newUser) {
-    return res.status(201).json(newUser);
-  } else {
-    return res.status(404).json({
+  if (!newUser) {
+    return res.status(400).json({
       error: "An error ocurred while creating a user",
     });
   }
+
+  return res.status(201).json(newUser);
 }
 
 async function httpGetOneUser(req, res) {
   const user = await getOneUser(req.params.username);
+
   if (!user) {
-    return res.status(400).json({
+    return res.status(404).json({
       error: "User not found",
     });
   }
@@ -91,45 +111,49 @@ async function httpGetOneUser(req, res) {
 }
 
 async function httpModifyUserFull(req, res) {
+  const username = req.params.username;
   const reqBody = req.body;
 
   //check if username is passed
-  if (!reqBody.username) {
-    return res.status(400).json({
-      error: "Username must be present",
+  const userExists = checkUsernameExists(username);
+  if (!userExists) {
+    return res.status(404).json({
+      error: "Username not found",
     });
   }
 
+  // this will create a user object to be updated in base of the fields passed
   const userModified = await createUserObject(reqBody);
 
-  const newUser = await modifyUserFull(userModified.username, userModified);
-  if (newUser) {
-    return res.status(201).json(userModified);
-  } else {
+  const newUser = await modifyUserFull(username, userModified);
+  if (!newUser) {
     return res.status(404).json({
-      error: "An error ocurred while modifying the user",
+      error: "User not found",
     });
   }
+
+  return res.status(200).json(newUser);
 }
 
 async function httpSetActiveToFalse(req, res) {
   const username = req.params.username;
 
+  // check if username was passed
   if (!username) {
     return res.status(400).json({
       error: "Must provide a username",
     });
   }
 
-  const results = await setActiveToFalse(username);
+  const userWithActiveModified = await setActiveToFalse(username);
 
-  if (results) {
-    return res.status(200).json(results);
-  } else {
+  if (!userWithActiveModified) {
     return res.status(404).json({
       error: "User not found",
     });
   }
+
+  return res.status(200).json(userWithActiveModified);
 }
 
 async function httpGetOwnUser(req, res) {
