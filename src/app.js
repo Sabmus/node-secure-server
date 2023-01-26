@@ -5,6 +5,7 @@ const path = require("path");
 const cors = require("cors");
 const passport = require("passport");
 const cookierParser = require("cookie-parser");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const {
   hasPermissionLevelOne,
@@ -18,9 +19,6 @@ require("./middlewares/auth");
 const apiRouter = require("./routes/api.router");
 
 const app = express();
-
-app.set("view engine", "hbs");
-app.set("views", path.join(__dirname, "views"));
 
 /** Middlewares */
 // Secure by setting various HTTP Headers
@@ -81,9 +79,9 @@ app.get(
 );
 
 // Handle errors.
-// app.use(function (err, req, res, next) {
-//   res.status(err.status || 500);
-//   res.json({ error: err });
-// });
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.json({ error: err });
+});
 
 module.exports = app;

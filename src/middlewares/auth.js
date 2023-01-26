@@ -2,6 +2,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const JWTstrategy = require("passport-jwt").Strategy;
 const { ExtractJwt } = require("passport-jwt");
+
 const UserModel = require("../models/mongo/users.mongo");
 
 const secretSignKey = process.env.SECRET_JWT_SIGN;

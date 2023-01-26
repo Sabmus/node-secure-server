@@ -1,6 +1,7 @@
+const path = require("path");
 const mongoose = require("mongoose");
 
-require("dotenv").config();
+require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 const MONGO_URL = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
