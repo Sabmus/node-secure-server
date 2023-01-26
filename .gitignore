@@ -3,7 +3,7 @@
 /.pnp
 .pnp.js
 
-/keys
+/src/keys
 
 .env
 .env.local
