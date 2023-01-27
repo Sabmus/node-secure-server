@@ -2,8 +2,6 @@
   <h1 align="center">Example of how to secure endpoints</h1>
 </div>
 
-`In progress...`
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -24,7 +22,7 @@
 
 ## About The Project
 
-I created this project for learning to secure endpoints in a express server. The idea is to use JWT and give a permission level to each endpoint, so regular users can only access to a few endpoints
+In this project you'll find a server with regular username and password authentication and JWT token authorization plus permission levels
 
 ### Built With
 
@@ -37,7 +35,7 @@ I created this project for learning to secure endpoints in a express server. The
 
 ### Prerequisites
 
-- You'll need a MongoDB Atlas cluster, they offer a free tier
+- You'll need a MongoDB Atlas account. (the have a free tier)
 
 ### Installation
 
@@ -50,7 +48,7 @@ I created this project for learning to secure endpoints in a express server. The
    npm install
    ```
 3. Enter your Mongo credentials in `.env` file
-   1. Also make sure that you'r IP address is added in "Network" tab inside MongoDB Dashboard
+   1. Also make sure that your IP address is added in "Network" tab inside MongoDB Dashboard
 4. Enter `keys` folder and create a new set of keys with (note that `AAA` must be replaced with a number of days in which the cert and key will be valid):
    ```sh
    openssl req -x509 -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days AAA
