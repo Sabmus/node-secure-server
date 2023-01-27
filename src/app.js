@@ -7,6 +7,7 @@ const passport = require("passport");
 const cookierParser = require("cookie-parser");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
+//set auth middlewares
 require("./middlewares/auth");
 
 const apiRouter = require("./routes/api.router");

@@ -4,8 +4,10 @@ const jwt = require("jsonwebtoken");
 
 const authRouter = express.Router();
 
+// to sign our JWT token
 const secretSignKey = process.env.SECRET_JWT_SIGN;
-const EXPIRATION = 1000 * 60 * 60 * 8; // 8 hours
+// we set a expiration time of 8 hours
+const EXPIRATION = 1000 * 60 * 60 * 8;
 
 authRouter.post("/login", (req, res, next) => {
   passport.authenticate("login", (err, user, info) => {

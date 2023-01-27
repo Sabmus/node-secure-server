@@ -74,6 +74,12 @@ async function httpCreateNewUser(req, res) {
     });
   }
 
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return res.status(400).json({
+      error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`,
+    });
+  }
+
   // validat if user exists in db
   const isAlreadyUser = await checkUsernameExists(username);
 
@@ -114,7 +120,14 @@ async function httpModifyUserFull(req, res) {
   const username = req.params.username;
   const reqBody = req.body;
 
-  //check if username is passed
+  // check if username was passed
+  if (!username) {
+    return res.status(400).json({
+      error: "Must provide a username",
+    });
+  }
+
+  //check if username exists
   const userExists = checkUsernameExists(username);
   if (!userExists) {
     return res.status(404).json({
@@ -126,11 +139,6 @@ async function httpModifyUserFull(req, res) {
   const userModified = await createUserObject(reqBody);
 
   const newUser = await modifyUserFull(username, userModified);
-  if (!newUser) {
-    return res.status(404).json({
-      error: "User not found",
-    });
-  }
 
   return res.status(200).json(newUser);
 }
@@ -142,6 +150,14 @@ async function httpSetActiveToFalse(req, res) {
   if (!username) {
     return res.status(400).json({
       error: "Must provide a username",
+    });
+  }
+
+  //check if username exists
+  const userExists = checkUsernameExists(username);
+  if (!userExists) {
+    return res.status(404).json({
+      error: "Username not found",
     });
   }
 

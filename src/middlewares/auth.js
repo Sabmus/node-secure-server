@@ -1,11 +1,12 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const JWTstrategy = require("passport-jwt").Strategy;
-const { ExtractJwt } = require("passport-jwt");
+//const { ExtractJwt } = require("passport-jwt");
 
 const UserModel = require("../models/mongo/users.mongo");
 const { checkPassword } = require("../utils/hash");
 
+// used for validate JWT token
 const secretSignKey = process.env.SECRET_JWT_SIGN;
 
 passport.use(
@@ -17,18 +18,21 @@ passport.use(
     },
     async (username, password, done) => {
       try {
+        // check if users exists and is active
         const user = await UserModel.findOne({ username, active: true });
 
         if (!user) {
           return done(null, false, { message: "User not found" });
         }
 
+        // validate password
         const validate = await checkPassword(password, user.password);
 
         if (!validate) {
           return done(null, false, { message: "Wrong Credentials" });
         }
 
+        // create a user object to return
         const userData = {
           id: user._id,
           permissionlevel: user.permissionlevel,
